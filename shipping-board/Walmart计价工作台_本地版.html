@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102a43">
+<title>Walmart 计价工作台</title>
+<style>
+:root{--navy:#102a43;--blue:#1769d2;--blue2:#eaf2ff;--gold:#f5c84c;--ink:#172b4d;--muted:#65758b;--line:#dfe6ef;--bg:#f3f6fa;--card:#fff;--green:#16794c;--green-bg:#e8f6ef;--amber:#9a6500;--amber-bg:#fff4d6;--red:#b42318;--red-bg:#fdebea;--shadow:0 10px 30px rgba(16,42,67,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Arial,"Microsoft YaHei",sans-serif}button,input,select{font:inherit}button{cursor:pointer}.shell{max-width:1540px;margin:0 auto;padding:0 24px}
+.topbar{background:var(--navy);color:#fff}.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:76px}.brand{display:flex;align-items:center;gap:13px}.brand-mark{width:38px;height:38px;border-radius:12px;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:20px}.brand-title{font-size:16px;font-weight:700;letter-spacing:.2px}.brand-sub{font-size:11px;color:#c5d4e4;margin-top:2px}.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}.save-state{font-size:12px;color:#c5d4e4;margin-right:6px}.btn{border:1px solid transparent;border-radius:9px;padding:9px 13px;font-weight:700;background:var(--blue);color:white;transition:.15s}.btn:hover{filter:brightness(.96);transform:translateY(-1px)}.btn.light{background:#fff;color:var(--navy);border-color:#cbd7e5}.btn.soft{background:var(--blue2);color:var(--blue);border-color:#d4e3fb}.btn.small{padding:6px 9px;font-size:12px}.btn.danger{background:#fff;color:var(--red);border-color:#f1c7c4}.file-input{display:none}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:28px 0 18px}.eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);margin-bottom:7px}.hero h1{font-size:26px;line-height:1.2;margin:0 0 7px;color:var(--navy)}.hero p{margin:0;color:var(--muted);max-width:750px}.hero-note{background:#fff9e7;border:1px solid #f2df9c;color:#6e5510;padding:10px 13px;border-radius:11px;font-size:12px;max-width:320px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:0 0 18px}.tab{padding:11px 15px;background:transparent;border:0;color:var(--muted);font-weight:700;border-bottom:3px solid transparent}.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.workbench-grid{display:grid;grid-template-columns:270px minmax(380px,1.1fr) minmax(340px,.9fr);gap:16px;align-items:start}.panel{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.panel-pad{padding:17px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.panel h2{font-size:15px;margin:0;color:var(--navy)}.panel h3{font-size:13px;margin:0;color:var(--navy)}.small-muted{font-size:11px;color:var(--muted)}
+.record-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:14px 0 11px}.search{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fbfcfe;outline:none}.search:focus,input:focus,select:focus{border-color:#85b3f4;box-shadow:0 0 0 3px rgba(23,105,210,.12);outline:none}.record-list{display:grid;gap:8px;margin-top:12px;max-height:calc(100vh - 290px);overflow:auto;padding-right:2px}.record-item{border:1px solid var(--line);border-radius:11px;padding:10px 11px;background:#fff;text-align:left;width:100%;color:var(--ink)}.record-item.active{border-color:#78aaf0;background:#f5f9ff;box-shadow:inset 3px 0 var(--blue)}.record-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.record-name{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pill{display:inline-flex;align-items:center;padding:3px 7px;border-radius:99px;background:#edf2f7;color:#496178;font-size:10px;font-weight:700;white-space:nowrap}.pill.wfs{background:#e7effc;color:#1753a6}.pill.direct{background:#e8f5ef;color:#1a7049}.record-meta{font-size:11px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between;gap:8px}.empty-list{padding:18px 10px;color:var(--muted);text-align:center;font-size:12px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line)}.section-title h2{font-size:16px;margin:0}.section-title p{font-size:11px;color:var(--muted);margin:4px 0 0}.section-body{padding:16px 18px}.group{margin-bottom:18px}.group-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.group-head strong{font-size:12px;color:var(--navy)}.group-head span{font-size:10px;color:var(--muted)}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field.full{grid-column:1/-1}.field-label{font-size:11px;font-weight:700;color:#465c73;display:flex;justify-content:space-between;gap:8px}.field-label em{font-style:normal;font-weight:400;color:#8a98a9}.control-wrap{position:relative}.field input,.field select,.setting-input{width:100%;height:38px;border:1px solid #d7e0ea;background:#fff;border-radius:8px;padding:8px 10px;color:var(--ink)}.field input[type=number],.setting-input[type=number]{font-variant-numeric:tabular-nums}.field .suffix{position:absolute;right:10px;top:10px;color:#7a899b;font-size:11px;pointer-events:none}.field.has-suffix input{padding-right:45px}.form-hint{font-size:10px;color:#8392a4;margin-top:3px}.editor-toolbar{display:flex;align-items:center;gap:7px}.subnote{font-size:11px;color:var(--muted);background:#f7f9fc;border-radius:9px;padding:9px 11px;margin-top:10px}
+.result-top{padding:17px 18px 12px;border-bottom:1px solid var(--line)}.result-title{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.result-title h2{margin:0;font-size:15px}.result-title p{margin:4px 0 0;color:var(--muted);font-size:11px}.status-pill{font-size:10px;font-weight:800;border-radius:99px;padding:5px 8px;background:#eef2f6;color:#5d6c7d;white-space:nowrap}.status-pill.good{background:var(--green-bg);color:var(--green)}.status-pill.warn{background:var(--amber-bg);color:var(--amber)}.status-pill.bad{background:var(--red-bg);color:var(--red)}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.kpi{border:1px solid var(--line);border-radius:11px;padding:11px 12px;min-height:78px}.kpi.primary{background:var(--navy);color:#fff;border-color:var(--navy)}.kpi-label{font-size:10px;color:var(--muted);font-weight:700}.kpi.primary .kpi-label{color:#d6e3f0}.kpi-value{font-size:21px;font-weight:800;letter-spacing:-.4px;margin-top:5px;font-variant-numeric:tabular-nums}.kpi-sub{font-size:10px;color:var(--muted);margin-top:2px}.kpi.primary .kpi-sub{color:#c5d4e4}
+.result-body{padding:13px 18px 18px}.result-section{margin-top:13px}.result-section h3{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#74849a;margin:0 0 7px}.cost-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed #e8edf3;font-size:11px}.cost-row span:first-child{color:#5d6e82}.cost-row strong{font-variant-numeric:tabular-nums;color:var(--ink)}.cost-row.total{border-top:1px solid var(--line);border-bottom:0;margin-top:4px;padding-top:9px;font-size:12px}.cost-row.total strong{color:var(--navy)}.alert-list{display:grid;gap:6px}.alert{padding:8px 9px;border-radius:8px;font-size:11px;background:var(--amber-bg);color:#805a0b}.alert.error{background:var(--red-bg);color:var(--red)}.alert.ok{background:var(--green-bg);color:var(--green)}
+.settings-wrap{display:grid;gap:14px}.settings-card{padding:17px 18px}.settings-card h2{margin:0 0 5px;font-size:15px}.settings-card p{margin:0 0 13px;color:var(--muted);font-size:11px}.settings-grid{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:10px}.setting-label{font-size:10px;font-weight:700;color:#566a80;display:block;margin-bottom:4px}.setting-wrap{min-width:0}.setting-input{height:34px;font-size:12px}.scroll-table{overflow:auto;border:1px solid var(--line);border-radius:10px}.rate-table{border-collapse:collapse;width:100%;min-width:740px;font-size:11px}.rate-table th{position:sticky;top:0;background:#f2f6fb;color:#54677d;text-align:left;padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}.rate-table td{padding:6px 7px;border-bottom:1px solid #edf1f5;white-space:nowrap}.rate-table tr:last-child td{border-bottom:0}.rate-table input{width:78px;height:30px;border:1px solid #d7e0ea;border-radius:6px;padding:5px 7px;font-size:11px}.rate-table input.wide{width:132px}.settings-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.settings-note{padding:10px 12px;background:#fff9e7;border:1px solid #f2df9c;border-radius:10px;color:#6e5510;font-size:11px;margin-top:13px}.settings-toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.footer{padding:24px 0 30px;color:#7d8a99;font-size:10px;text-align:center}.hidden{display:none!important}
+@media(max-width:1200px){.workbench-grid{grid-template-columns:245px minmax(360px,1fr)}.results-panel{grid-column:2}.hero-note{display:none}.record-list{max-height:400px}}
+@media(max-width:820px){.shell{padding:0 14px}.topbar-inner{align-items:flex-start;padding:14px 0;flex-direction:column}.top-actions{justify-content:flex-start}.hero{padding-top:21px}.hero h1{font-size:22px}.workbench-grid{grid-template-columns:1fr}.results-panel{grid-column:auto}.record-list{max-height:240px}.settings-grid{grid-template-columns:repeat(2,minmax(120px,1fr))}.panel-pad{padding:14px}}
+@media(max-width:520px){.hero{display:block}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.record-actions{grid-template-columns:1fr 1fr}.kpi-value{font-size:19px}.settings-grid{grid-template-columns:1fr 1fr}.top-actions .save-state{width:100%}.section-title{padding:14px}.section-body{padding:14px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="shell topbar-inner">
+  <div class="brand"><div class="brand-mark">W</div><div><div class="brand-title">Walmart 计价工作台</div><div class="brand-sub">WFS 履约 · 直邮自发货 · SKU 单件利润测算</div></div></div>
+  <div class="top-actions"><span class="save-state" id="saveState">保存在此浏览器</span><button class="btn light small" id="exportBtn">导出数据</button><label class="btn light small" for="importFile">导入数据</label><input class="file-input" type="file" id="importFile" accept=".json,application/json"></div>
+ </div>
+</header>
+<main class="shell">
+ <section class="hero">
+  <div><div class="eyebrow">Pricing workspace</div><h1>把成本、费率和目标利润放在一起算</h1><p>新建 SKU 方案，录入含包装尺寸与重量，查看目标售价、保本价和试算利润。参数与平台费率集中维护，修改后所有方案即时更新。</p></div>
+  <div class="hero-note">示例数字来自上传的 WFS 计价模板。正式报价前请按最新物流报价、关税和 Seller Center 实扣费率更新参数。</div>
+ </section>
+ <nav class="tabs"><button class="tab active" data-view="workbench">计价工作台</button><button class="tab" data-view="settings">参数与费率</button></nav>
+ <section id="workbenchView">
+  <div class="workbench-grid">
+   <aside class="panel panel-pad">
+    <div class="panel-head"><h2>SKU 方案</h2><span class="small-muted" id="recordCount"></span></div>
+    <div class="record-actions"><button class="btn small" data-new="wfs">＋ 新建 WFS</button><button class="btn soft small" data-new="direct">＋ 新建直邮</button></div>
+    <input class="search" id="searchBox" type="search" placeholder="搜索 SKU 或品名">
+    <div class="record-list" id="recordList"></div>
+   </aside>
+   <section class="panel" id="editorPanel"></section>
+   <aside class="panel results-panel" id="resultsPanel"></aside>
+  </div>
+ </section>
+ <section id="settingsView" class="hidden">
+  <div class="settings-wrap">
+   <section class="panel settings-card"><div class="settings-top"><div><h2>全局参数</h2><p>修改后会同步影响全部 SKU 方案。百分比以百分数录入。</p></div><div class="settings-toolbar"><button class="btn light small" id="resetSettings">恢复附件默认参数</button></div></div><div class="settings-grid" id="globalSettings"></div></section>
+   <section class="panel settings-card"><h2>佣金类目</h2><p>按售价区间选择佣金率。低档上限填 0 时按单一费率计算。</p><div class="scroll-table" id="commissionTable"></div></section>
+   <section class="panel settings-card"><h2>WFS 配送与退货费率</h2><p>配送费与退货处理费按计费重量查档。低价附加费适用于售价低于门槛的商品。</p><div class="scroll-table" id="wfsTable"></div><div class="settings-grid" id="wfsExtras"></div><div class="settings-grid" id="sizeThresholds"></div></section>
+   <section class="panel settings-card"><h2>直邮物流价目</h2><p>物流价格沿用附件示例，请按承运商的最新报价替换。</p><div class="scroll-table" id="directTable"></div></section>
+   <div class="settings-note">费率表沿用附件标注的 2026-10-30 核对口径。服装、电子配件、家具、珠宝、手表、小家电等未收录类目，需单独核算。页面数据默认保存在当前浏览器，可通过右上角导入和导出 JSON。</div>
+  </div>
+ </section>
+ <footer class="footer">Walmart pricing workspace · 单位：美元、人民币、kg、cm、lb · 本页面在浏览器本地计算，不连接外部服务。</footer>
+</main>
+<script>
+(function(){
+"use strict";
+const KEY="walmart-pricing-workbench-v1";
+const defaultSettings={
+ fx:6.65,paymentFee:0.01,seaRate:13,airRate:45,volumeDivisor:6000,storageRate:0.75,lowPriceThreshold:10,lowPriceFee:1,
+ commissions:{
+  "宠物用品":{low:0.15,cap:0,high:0.15},"玩具和游戏":{low:0.15,cap:0,high:0.15},"家居厨房装饰园艺":{low:0.15,cap:0,high:0.15},
+  "办公用品":{low:0.15,cap:0,high:0.15},"美妆健康个护":{low:0.08,cap:10,high:0.15},"婴儿用品":{low:0.08,cap:10,high:0.15},
+  "食品杂货":{low:0.08,cap:15,high:0.15},"工具与家装":{low:0.15,cap:0,high:0.15},"户外与运动":{low:0.15,cap:0,high:0.15},
+  "鞋包配饰":{low:0.15,cap:0,high:0.15},"其他一切":{low:0.15,cap:0,high:0.15}
+ },
+ wfsFees:[
+  {label:"1 lb",min:0,max:1,deliveryBase:3.45,deliveryStart:1,deliveryPerLb:0,returnBase:4.70,returnStart:1,returnPerLb:0},
+  {label:"2 lb",min:2,max:2,deliveryBase:4.95,deliveryStart:2,deliveryPerLb:0,returnBase:6.20,returnStart:2,returnPerLb:0},
+  {label:"3 lb",min:3,max:3,deliveryBase:5.45,deliveryStart:3,deliveryPerLb:0,returnBase:6.70,returnStart:3,returnPerLb:0},
+  {label:"4–20 lb",min:4,max:20,deliveryBase:5.75,deliveryStart:4,deliveryPerLb:0.40,returnBase:7.00,returnStart:4,returnPerLb:0.40},
+  {label:"21–30 lb",min:21,max:30,deliveryBase:15.55,deliveryStart:21,deliveryPerLb:0.40,returnBase:15.55,returnStart:21,returnPerLb:0.40},
+  {label:"31–50 lb",min:31,max:50,deliveryBase:14.55,deliveryStart:31,deliveryPerLb:0.40,returnBase:14.55,returnStart:31,returnPerLb:0.40},
+  {label:"51–150 lb",min:51,max:150,deliveryBase:17.55,deliveryStart:51,deliveryPerLb:0.40,returnBase:17.55,returnStart:51,returnPerLb:0.40}
+ ],
+ wfsExtras:{apparel:0.50,hazardous:0.50,oversize1:3,oversize2:20,bigBase:155,bigStartLb:90,bigPerLb:0.80,oversize2StartLb:90},
+ sizes:{oversize1Longest:48,oversize1Mid:30,oversize1Girth:105,oversize2Longest:96,oversize2Girth:130,bigWeight:150,bigLongest:108,bigGirth:165},
+ directMail:{minBillableKg:0.05,tiers:[
+  {max:0.20,regular:78,battery:88,cosmetics:90,handling:25},
+  {max:0.30,regular:78,battery:88,cosmetics:90,handling:27},
+  {max:0.45,regular:78,battery:88,cosmetics:90,handling:30},
+  {max:2,regular:84,battery:88,cosmetics:90,handling:53},
+  {max:30,regular:84,battery:88,cosmetics:90,handling:63}
+ ]}
+};
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function uid(){return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function defaultRecords(){return[
+ {id:"demo-wfs",mode:"wfs",sku:"示例1",name:"模板示例 · 宠物玩具",category:"宠物用品",freight:"海运",hazardous:false,apparel:false,purchaseRmb:9.2,weightKg:0.11,lengthCm:20,widthCm:20,heightCm:5,duty:0,ads:0.10,returns:0.05,unsellable:0.50,months:2,targetMargin:0.15,testPrice:27},
+ {id:"demo-direct",mode:"direct",sku:"示例A",name:"模板示例 · 普货",goodsType:"regular",purchaseRmb:10,weightKg:0.14,commission:0.15,duty:0,ads:0.10,returns:0.05,targetMargin:0.15,testPrice:36}
+]}
+function loadApp(){
+ try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&Array.isArray(s.records)&&s.settings){return{settings:s.settings,records:s.records,activeId:s.activeId||s.records[0]?.id||"",view:"workbench"}}}catch(e){}
+ return{settings:clone(defaultSettings),records:defaultRecords(),activeId:"demo-wfs",view:"workbench"}
+}
+let app=loadApp();
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify({settings:app.settings,records:app.records,activeId:app.activeId}));const el=document.getElementById("saveState");el.textContent="已保存在此浏览器";el.classList.remove("dirty")}catch(e){document.getElementById("saveState").textContent="浏览器存储不可用"}
+}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+function num(v){const x=Number(v);return Number.isFinite(x)?x:null}
+function money(v){return Number.isFinite(v)?"$"+v.toFixed(2):"—"}
+function pct(v){return Number.isFinite(v)?(v*100).toFixed(1)+"%":"—"}
+function val(v,scale){const x=num(v);return x===null?"":(x*scale).toString()}
+function active(){return app.records.find(r=>r.id===app.activeId)||null}
+function feeBand(weight){let chosen=app.settings.wfsFees[0];for(const f of app.settings.wfsFees){if(weight>=Number(f.min))chosen=f}return chosen}
+function feeFor(weight,isReturn){const f=feeBand(weight);const base=isReturn?Number(f.returnBase):Number(f.deliveryBase);const start=isReturn?Number(f.returnStart):Number(f.deliveryStart);const each=isReturn?Number(f.returnPerLb):Number(f.deliveryPerLb);return base+Math.max(weight-start,0)*each}
+function commissionFor(price,c){return price<=Number(c.cap)?Number(c.low):Number(c.high)}
+function wfsTarget(fixed,returns,big,variable,targetMargin,c){
+ const out=[];const extra=big?0:Number(app.settings.lowPriceFee)*(1+returns);const threshold=Number(app.settings.lowPriceThreshold);
+ for(const tier of ["low","high"]){
+  const rate=Number(tier==="low"?c.low:c.high);const denominator=1-rate-variable-targetMargin;
+  if(denominator<=0)continue;
+  const p=(fixed+extra)/denominator;
+  if(p>0&&p<threshold&&((tier==="low"&&p<=Number(c.cap))||(tier==="high"&&p>Number(c.cap))))out.push(p);
+ }
+ for(const tier of ["low","high"]){
+  const rate=Number(tier==="low"?c.low:c.high);const denominator=1-rate-variable-targetMargin;
+  if(denominator<=0)continue;
+  const p=Math.max(threshold,fixed/denominator);
+  if((tier==="low"&&p<=Number(c.cap))||(tier==="high"&&p>Number(c.cap)))out.push(p);
+ }
+ return out.length?Math.min.apply(null,out):null;
+}
+function calcWfs(r){
+ const s=app.settings;
+ const fx=Number(s.fx),purchase=Number(r.purchaseRmb),kg=Number(r.weightKg),l=Number(r.lengthCm),w=Number(r.widthCm),h=Number(r.heightCm);
+ if(!(fx>0&&purchase>=0&&kg>0&&l>0&&w>0&&h>0))return null;
+ const volume=l*w*h,actualLb=kg*2.20462,dimLb=volume/16.387064/139;
+ const dims=[l,w,h].sort((a,b)=>b-a),long=dims[0]/2.54,mid=dims[1]/2.54,short=dims[2]/2.54,girth=long+2*(mid+short);
+ const z=s.sizes,x=s.wfsExtras;
+ let size="标准";
+ if(actualLb>Number(z.bigWeight)||long>Number(z.bigLongest)||girth>Number(z.bigGirth))size="大件";
+ else if(long>Number(z.oversize2Longest)||girth>Number(z.oversize2Girth))size="超大2";
+ else if(long>Number(z.oversize1Longest)||mid>Number(z.oversize1Mid)||girth>Number(z.oversize1Girth))size="超大1";
+ const shipWeight=size==="大件"?Math.ceil(actualLb):Math.max(Math.ceil((actualLb<1?actualLb:Math.max(actualLb,dimLb))+0.25),size==="超大2"?Number(x.oversize2StartLb):0);
+ const returnWeight=size==="大件"?Math.ceil(actualLb):Math.ceil(Math.max(actualLb,dimLb)+0.25);
+ const tier=feeBand(shipWeight);
+ const baseDelivery=feeFor(shipWeight,false);
+ const extraFee=size==="大件"?0:(r.hazardous?Number(x.hazardous):0)+(r.apparel?Number(x.apparel):0)+(size==="超大1"?Number(x.oversize1):0)+(size==="超大2"?Number(x.oversize2):0);
+ const delivery=baseDelivery+extraFee;
+ const returnFee=size==="大件"?Number(x.bigBase)+Number(x.bigPerLb)*Math.max(returnWeight-Number(x.bigStartLb),0):feeFor(returnWeight,true)+extraFee;
+ const volumeFt=volume/(16.387064*1728),headKg=Math.max(kg,volume/Number(s.volumeDivisor));
+ const purchaseUsd=purchase/fx,headRmb=headKg*(r.freight==="空运"?Number(s.airRate):Number(s.seaRate)),headUsd=headRmb/fx,dutyUsd=purchaseUsd*Number(r.duty||0),landed=purchaseUsd+headUsd+dutyUsd;
+ const storage=volumeFt*Number(s.storageRate)*Number(r.months||0);
+ const returns=Number(r.returns||0),unsellable=Number(r.unsellable||0);
+ const returnAllocation=returns*(delivery+returnFee+unsellable*landed);
+ const fixed=landed+delivery+storage+returnAllocation;
+ const category=s.commissions[r.category]||s.commissions["其他一切"];
+ const variable=Number(r.ads||0)+Number(s.paymentFee);
+ const target=wfsTarget(fixed,returns,size==="大件",variable,Number(r.targetMargin||0),category);
+ const breakeven=wfsTarget(fixed,returns,size==="大件",variable,0,category);
+ const price=num(r.testPrice);
+ let commission=NaN,lowFee=NaN,adsPayment=NaN,profit=NaN,margin=NaN;
+ if(price!==null&&price>0){commission=price*commissionFor(price,category);lowFee=price<Number(s.lowPriceThreshold)&&size!=="大件"?Number(s.lowPriceFee)*(1+returns):0;adsPayment=price*variable;profit=price-commission-lowFee-adsPayment-fixed;margin=profit/price}
+ const targetMarginActual=target?((target-target*commissionFor(target,category)-(target<Number(s.lowPriceThreshold)&&size!=="大件"?Number(s.lowPriceFee)*(1+returns):0)-target*variable-fixed)/target):NaN;
+ const warnings=[];
+ if(!r.category)warnings.push("未选佣金类目，按其他一切费率计算。");
+ if(Number(r.duty||0)===0)warnings.push("关税率为 0，请确认头程是否包税。");
+ if(size!=="标准")warnings.push("尺寸档为"+size+"，请复核 WFS 费率。");
+ if(target===null)warnings.push("目标净利率下无解，请调整成本或目标。");
+ else if(target<Number(s.lowPriceThreshold))warnings.push("目标价低于 $"+Number(s.lowPriceThreshold)+"，已计入低价附加费。");
+ else if(Math.abs(target-Number(s.lowPriceThreshold))<0.005)warnings.push("目标价位于 $"+Number(s.lowPriceThreshold)+" 门槛，可比较门槛两侧利润。");
+ if(Number.isFinite(margin)){if(margin<0)warnings.push("试算售价亏损。");else if(margin<Number(r.targetMargin||0))warnings.push("试算净利率低于目标。")}
+ if(!warnings.length)warnings.push("试算净利率达到目标。");
+ return{size,actualLb,dimLb,long,mid,girth,shipWeight,returnWeight,tier,baseDelivery,extraFee,delivery,returnFee,volumeFt,headKg,purchaseUsd,headRmb,headUsd,dutyUsd,landed,storage,returnAllocation,fixed,commissionRate:Number.isFinite(price)&&price>0?commissionFor(price,category):NaN,commission,lowFee,adsPayment,profit,margin,target,breakeven,targetMarginActual,drop:Number.isFinite(price)&&Number.isFinite(breakeven)?price-breakeven:NaN,dropPct:Number.isFinite(price)&&price>0&&Number.isFinite(breakeven)?(price-breakeven)/price:NaN,warnings}
+}
+function calcDirect(r){
+ const s=app.settings,fx=Number(s.fx),purchase=Number(r.purchaseRmb),kg=Number(r.weightKg);
+ if(!(fx>0&&purchase>=0&&kg>0))return null;
+ const billable=Math.max(kg,Number(s.directMail.minBillableKg));
+ const tier=s.directMail.tiers.find(t=>billable<=Number(t.max));
+ if(!tier)return{overweight:true,billable,warnings:["计费重量超过价目表范围。"]};
+ const field=r.goodsType==="battery"?"battery":r.goodsType==="cosmetics"?"cosmetics":"regular";
+ const perKg=Number(tier[field]),handling=Number(tier.handling),shipRmb=billable*perKg+handling;
+ const purchaseUsd=purchase/fx,shipUsd=shipRmb/fx,dutyUsd=purchaseUsd*Number(r.duty||0),landed=purchaseUsd+shipUsd+dutyUsd;
+ const returnAllocation=Number(r.returns||0)*landed,fixed=landed+returnAllocation,variable=Number(r.commission||0)+Number(r.ads||0)+Number(s.paymentFee);
+ const targetDen=1-variable-Number(r.targetMargin||0),beDen=1-variable;
+ const target=targetDen>0?fixed/targetDen:null,breakeven=beDen>0?fixed/beDen:null;
+ const price=num(r.testPrice);let profit=NaN,margin=NaN;
+ if(price!==null&&price>0){profit=price*(1-variable)-fixed;margin=profit/price}
+ const warnings=[];
+ if(Number(r.duty||0)===0)warnings.push("关税率为 0，请确认物流报价是否含税。");
+ if(Number.isFinite(margin)){if(margin<0)warnings.push("试算售价亏损。");else if(margin<Number(r.targetMargin||0))warnings.push("试算净利率低于目标。")}
+ if(!warnings.length)warnings.push("试算净利率达到目标。");
+ return{overweight:false,billable,tierMax:Number(tier.max),perKg,handling,shipRmb,purchaseUsd,shipUsd,dutyUsd,landed,returnAllocation,fixed,variable,target,breakeven,profit,margin,drop:Number.isFinite(price)&&Number.isFinite(breakeven)?price-breakeven:NaN,dropPct:Number.isFinite(price)&&price>0&&Number.isFinite(breakeven)?(price-breakeven)/price:NaN,warnings}
+}
+function calc(r){return r.mode==="direct"?calcDirect(r):calcWfs(r)}
+function input(label,key,value,type,opts){
+ opts=opts||{};const full=opts.full?" full":"";const suffix=opts.suffix||"";
+ let control="";
+ if(type==="select"){control='<select data-field="'+key+'">'+opts.options.map(o=>'<option value="'+esc(o[0])+'" '+(String(value)===String(o[0])?"selected":"")+'>'+esc(o[1])+'</option>').join("")+'</select>'}
+ else{const percent=opts.scale===100;const shown=percent?val(value,100):esc(value==null?"":value);control='<div class="control-wrap'+(suffix?" has-suffix":"")+'"><input type="'+(type==="text"?"text":"number")+'" data-field="'+key+'" data-scale="'+(opts.scale||1)+'" value="'+shown+'" '+(type==="text"?'maxlength="80"':'step="'+(opts.step||"0.01")+'" min="'+(opts.min||"0")+'"')+'>'+ (suffix?'<span class="suffix">'+esc(suffix)+'</span>':"")+'</div>'}
+ return'<label class="field'+full+'"><span class="field-label">'+esc(label)+(opts.note?'<em>'+esc(opts.note)+'</em>':"")+'</span>'+control+(opts.hint?'<span class="form-hint">'+esc(opts.hint)+'</span>':"")+'</label>'
+}
+function group(title,note,fields){return'<div class="group"><div class="group-head"><strong>'+title+'</strong><span>'+note+'</span></div><div class="field-grid">'+fields.join("")+'</div></div>'}
+function renderEditor(){
+ const r=active(),el=document.getElementById("editorPanel");
+ if(!r){el.innerHTML='<div class="section-body empty-list">新建一个 SKU 方案开始计价。</div>';return}
+ const tools='<div class="editor-toolbar"><button class="btn light small" data-action="duplicate">复制方案</button><button class="btn danger small" data-action="delete">删除</button></div>';
+ let body="";
+ if(r.mode==="wfs"){
+  body+=group("商品信息","佣金与履约属性",[
+   input("SKU","sku",r.sku,"text",{note:"可留空"}),input("品名","name",r.name,"text"),
+   input("佣金类目","category",r.category,"select",{options:Object.keys(app.settings.commissions).map(x=>[x,x])}),
+   input("头程方式","freight",r.freight,"select",{options:[["海运","海运"],["空运","空运"]]}),
+   input("危险品","hazardous",String(!!r.hazardous),"select",{options:[["false","否"],["true","是"]],hint:"含电池、气雾剂或相关化学品时核对规则"}),
+   input("服装","apparel",String(!!r.apparel),"select",{options:[["false","否"],["true","是"]]})
+  ]);
+  body+=group("采购与包装","重量和三边均含零售包装",[
+   input("采购成本","purchaseRmb",r.purchaseRmb,"number",{suffix:"RMB/件",step:"0.01"}),
+   input("实重","weightKg",r.weightKg,"number",{suffix:"kg",step:"0.001"}),
+   input("长度","lengthCm",r.lengthCm,"number",{suffix:"cm",step:"0.1"}),
+   input("宽度","widthCm",r.widthCm,"number",{suffix:"cm",step:"0.1"}),
+   input("高度","heightCm",r.heightCm,"number",{suffix:"cm",step:"0.1"}),
+   input("关税率","duty",r.duty,"number",{suffix:"%",scale:100,step:"0.1",hint:"按 HS 编码或头程合同维护"})
+  ]);
+  body+=group("经营假设","用于单品利润测算",[
+   input("广告占比 TACoS","ads",r.ads,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("退货率","returns",r.returns,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("退货不可售比例","unsellable",r.unsellable,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("平均在仓月数","months",r.months,"number",{suffix:"月",step:"0.1"}),
+   input("目标净利率","targetMargin",r.targetMargin,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("试算售价","testPrice",r.testPrice,"number",{suffix:"USD",step:"0.01"})
+  ]);
+ }else{
+  body+=group("商品信息","直邮货物属性",[
+   input("SKU","sku",r.sku,"text",{note:"可留空"}),input("品名","name",r.name,"text"),
+   input("货物属性","goodsType",r.goodsType,"select",{options:[["regular","普货"],["battery","带电"],["cosmetics","化妆品"]] }),
+   input("采购成本","purchaseRmb",r.purchaseRmb,"number",{suffix:"RMB/件",step:"0.01"}),
+   input("包装实重","weightKg",r.weightKg,"number",{suffix:"kg",step:"0.001"}),
+   input("佣金率","commission",r.commission,"number",{suffix:"%",scale:100,step:"0.1"})
+  ]);
+  body+=group("经营假设","费率与退款分摊",[
+   input("关税率","duty",r.duty,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("广告占比","ads",r.ads,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("退款率","returns",r.returns,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("目标净利率","targetMargin",r.targetMargin,"number",{suffix:"%",scale:100,step:"0.1"}),
+   input("试算售价","testPrice",r.testPrice,"number",{suffix:"USD",step:"0.01"})
+  ]);
+ }
+ el.innerHTML='<div class="section-title"><div><h2>'+(r.mode==="wfs"?"WFS 履约计价":"直邮自发货计价")+'</h2><p>修改输入后，定价结果和方案列表会即时更新。</p></div>'+tools+'</div><div class="section-body">'+body+'<div class="subnote">蓝色输入框为当前方案数据。修改「参数与费率」会重新计算所有方案。</div></div>';
+}
+function resultKpi(label,value,sub,primary){return'<div class="kpi'+(primary?" primary":"")+'"><div class="kpi-label">'+label+'</div><div class="kpi-value">'+value+'</div><div class="kpi-sub">'+(sub||"")+'</div></div>'}
+function costRow(label,value,total){return'<div class="cost-row'+(total?" total":"")+'"><span>'+label+'</span><strong>'+value+'</strong></div>'}
+function renderResults(){
+ const r=active(),el=document.getElementById("resultsPanel");
+ if(!r){el.innerHTML='<div class="panel-pad empty-list">选择或新建 SKU 方案。</div>';return}
+ const x=calc(r);
+ if(!x){el.innerHTML='<div class="result-top"><div class="result-title"><div><h2>定价结果</h2><p>补齐成本、重量和包装尺寸后开始计算。</p></div><span class="status-pill">待录入</span></div></div><div class="result-body"><div class="alert">请填写采购成本、包装重量及必要尺寸。当前结果不以空值替代为 0。</div></div>';return}
+ if(x.overweight){el.innerHTML='<div class="result-top"><div class="result-title"><div><h2>定价结果</h2><p>当前重量超出直邮价目表。</p></div><span class="status-pill bad">需核价</span></div></div><div class="result-body"><div class="alert error">计费重量 '+x.billable.toFixed(3)+' kg，超过价目表最大档。请更新直邮价目。</div></div>';return}
+ const testPrice=num(r.testPrice);
+ const status=!Number.isFinite(x.margin)?"待试算":x.margin<0?"试算亏损":x.margin<Number(r.targetMargin||0)?"低于目标":"达到目标";
+ const statusClass=status==="达到目标"?"good":status==="试算亏损"?"bad":status==="低于目标"?"warn":"";
+ const results='<div class="result-top"><div class="result-title"><div><h2>单件利润结果</h2><p>'+(r.mode==="wfs"?(x.size+" · 配送计费重 "+x.shipWeight.toFixed(0)+" lb · 退货计费重 "+x.returnWeight.toFixed(0)+" lb"):("直邮计费重 "+x.billable.toFixed(3)+" kg · 物流档 ≤"+x.tierMax+" kg"))+'</p></div><span class="status-pill '+statusClass+'">'+status+'</span></div><div class="kpi-grid">'+
+  resultKpi("目标售价",money(x.target), "目标净利率 "+pct(Number(r.targetMargin||0)),true)+
+  resultKpi("保本价",money(x.breakeven),"预计单件利润为 $0",false)+
+  resultKpi("试算净利润",money(x.profit),Number.isFinite(x.profit)?("人民币约 ¥"+(x.profit*Number(app.settings.fx)).toFixed(2)):"",false)+
+  resultKpi("试算净利率",pct(x.margin),Number.isFinite(x.drop)?"距保本 "+money(x.drop):"",false)+
+  '</div></div>';
+ let breakdown="";
+ if(r.mode==="wfs"){
+  breakdown=costRow("采购成本",money(x.purchaseUsd))+costRow("头程计费重",x.headKg.toFixed(3)+" kg")+costRow("头程费用",money(x.headUsd))+costRow("关税",money(x.dutyUsd))+costRow("WFS 配送费",money(x.delivery))+costRow("退货处理费",money(x.returnFee))+costRow("仓储费",money(x.storage))+costRow("退货分摊",money(x.returnAllocation))+costRow("固定成本合计",money(x.fixed),true)+costRow("试算佣金",money(x.commission))+costRow("低价附加费",money(x.lowFee))+costRow("广告与收款费",money(x.adsPayment))+costRow("目标价反算净利率",pct(x.targetMarginActual));
+ }else{
+  breakdown=costRow("采购成本",money(x.purchaseUsd))+costRow("直邮运费",money(x.shipUsd))+costRow("关税",money(x.dutyUsd))+costRow("退款分摊",money(x.returnAllocation))+costRow("固定成本合计",money(x.fixed),true)+costRow("比例费用率",pct(x.variable))+costRow("距保本可降",money(x.drop))+costRow("可降幅度",pct(x.dropPct));
+ }
+ const alerts=x.warnings.map(w=>'<div class="alert '+(w.indexOf("亏损")>=0||w.indexOf("无解")>=0?"error":w.indexOf("达到")>=0?"ok":"")+'">'+esc(w)+'</div>').join("");
+ const meta=r.mode==="wfs"?costRow("规格识别",x.size+" · 最长边 "+x.long.toFixed(1)+" in · 长周 "+x.girth.toFixed(1)+" in")+costRow("体积重",x.dimLb.toFixed(3)+" lb · "+x.volumeFt.toFixed(4)+" cu ft")+costRow("比例费率",pct(x.commissionRate)+" 佣金 + "+pct(Number(r.ads||0)+Number(app.settings.paymentFee))+" 广告/收款"):costRow("运费计价",x.billable.toFixed(3)+" kg × ¥"+x.perKg.toFixed(2)+"/kg + ¥"+x.handling.toFixed(2));
+ el.innerHTML=results+'<div class="result-body"><div class="result-section"><h3>成本与费用</h3>'+breakdown+'</div><div class="result-section"><h3>包裹与费率</h3>'+meta+'</div><div class="result-section"><h3>提示</h3><div class="alert-list">'+alerts+'</div></div></div>';
+}
+function renderList(){
+ const q=(document.getElementById("searchBox").value||"").toLowerCase();
+ const list=app.records.filter(r=>(String(r.sku||"")+" "+String(r.name||"")).toLowerCase().includes(q));
+ document.getElementById("recordCount").textContent=app.records.length+" 个方案";
+ const box=document.getElementById("recordList");
+ if(!list.length){box.innerHTML='<div class="empty-list">没有匹配的 SKU 方案</div>';return}
+ box.innerHTML=list.map(r=>{
+  const x=calc(r),price=x&&!x.overweight?x.target:null,profit=x&&!x.overweight?x.profit:null;
+  return'<button class="record-item '+(r.id===app.activeId?"active":"")+'" data-id="'+esc(r.id)+'"><div class="record-row"><span class="record-name">'+esc(r.sku||r.name||"未命名方案")+'</span><span class="pill '+(r.mode==="wfs"?"wfs":"direct")+'">'+(r.mode==="wfs"?"WFS":"直邮")+'</span></div><div class="record-meta"><span>'+esc(r.name||"")+'</span><span>目标 '+money(price)+'</span></div><div class="record-meta"><span>试算 '+money(num(r.testPrice))+'</span><span>净利 '+money(profit)+'</span></div></button>'
+ }).join("");
+}
+function renderWorkbench(){renderList();renderResults()}
+function settingField(label,path,value,opts){
+ opts=opts||{};const scale=opts.scale||1;const shown=Number(value)*scale;
+ return'<label class="setting-wrap"><span class="setting-label">'+esc(label)+'</span><input class="setting-input" type="number" step="'+(opts.step||"0.01")+'" min="0" data-setting="'+esc(path)+'" value="'+(Number.isFinite(shown)?shown:"")+'"></label>'
+}
+function renderSettings(){
+ const s=app.settings;
+ document.getElementById("globalSettings").innerHTML=[
+  settingField("人民币兑美元汇率","fx",s.fx,{step:"0.01"}),
+  settingField("收款/提现费率 (%)","paymentFee",s.paymentFee,{scale:100,step:"0.1"}),
+  settingField("海运头程 (RMB/kg)","seaRate",s.seaRate,{step:"0.01"}),
+  settingField("空运头程 (RMB/kg)","airRate",s.airRate,{step:"0.01"}),
+  settingField("头程材积除数 (cm³/kg)","volumeDivisor",s.volumeDivisor,{step:"1"}),
+  settingField("WFS仓储 ($/cu ft/月)","storageRate",s.storageRate,{step:"0.01"}),
+  settingField("低价门槛 ($)","lowPriceThreshold",s.lowPriceThreshold,{step:"0.01"}),
+  settingField("低价附加费 ($)","lowPriceFee",s.lowPriceFee,{step:"0.01"})
+ ].join("");
+ const crows=Object.keys(s.commissions).map(k=>'<tr><td>'+esc(k)+'</td><td><input data-setting="commissions.'+esc(k)+'.low" type="number" min="0" step="0.1" value="'+(s.commissions[k].low*100)+'"></td><td><input data-setting="commissions.'+esc(k)+'.cap" type="number" min="0" step="0.01" value="'+s.commissions[k].cap+'"></td><td><input data-setting="commissions.'+esc(k)+'.high" type="number" min="0" step="0.1" value="'+(s.commissions[k].high*100)+'"></td></tr>').join("");
+ document.getElementById("commissionTable").innerHTML='<table class="rate-table"><thead><tr><th>类目</th><th>低档费率 (%)</th><th>低档上限 ($)</th><th>高档费率 (%)</th></tr></thead><tbody>'+crows+'</tbody></table>';
+ const frows=s.wfsFees.map((f,i)=>'<tr><td>'+esc(f.label)+'</td><td><input data-setting="wfsFees.'+i+'.min" type="number" step="1" value="'+f.min+'"></td><td><input data-setting="wfsFees.'+i+'.max" type="number" step="1" value="'+f.max+'"></td><td><input data-setting="wfsFees.'+i+'.deliveryBase" type="number" step="0.01" value="'+f.deliveryBase+'"></td><td><input data-setting="wfsFees.'+i+'.deliveryStart" type="number" step="1" value="'+f.deliveryStart+'"></td><td><input data-setting="wfsFees.'+i+'.deliveryPerLb" type="number" step="0.01" value="'+f.deliveryPerLb+'"></td><td><input data-setting="wfsFees.'+i+'.returnBase" type="number" step="0.01" value="'+f.returnBase+'"></td><td><input data-setting="wfsFees.'+i+'.returnStart" type="number" step="1" value="'+f.returnStart+'"></td><td><input data-setting="wfsFees.'+i+'.returnPerLb" type="number" step="0.01" value="'+f.returnPerLb+'"></td></tr>').join("");
+ document.getElementById("wfsTable").innerHTML='<table class="rate-table"><thead><tr><th>档位</th><th>下限 lb</th><th>上限 lb</th><th>配送基础费 $</th><th>配送起算 lb</th><th>配送每磅加价 $</th><th>退货基础费 $</th><th>退货起算 lb</th><th>退货每磅加价 $</th></tr></thead><tbody>'+frows+'</tbody></table>';
+ document.getElementById("wfsExtras").innerHTML=[
+  settingField("服装附加费 ($)","wfsExtras.apparel",s.wfsExtras.apparel),
+  settingField("危险品附加费 ($)","wfsExtras.hazardous",s.wfsExtras.hazardous),
+  settingField("超大1附加费 ($)","wfsExtras.oversize1",s.wfsExtras.oversize1),
+  settingField("超大2附加费 ($)","wfsExtras.oversize2",s.wfsExtras.oversize2),
+  settingField("大件基础费 ($)","wfsExtras.bigBase",s.wfsExtras.bigBase),
+  settingField("大件起算重量 (lb)","wfsExtras.bigStartLb",s.wfsExtras.bigStartLb),
+  settingField("大件每磅加价 ($)","wfsExtras.bigPerLb",s.wfsExtras.bigPerLb),
+  settingField("超大2起算重量 (lb)","wfsExtras.oversize2StartLb",s.wfsExtras.oversize2StartLb)
+ ].join("");
+ document.getElementById("sizeThresholds").innerHTML=[
+  settingField("超大1最长边阈值 (in)","sizes.oversize1Longest",s.sizes.oversize1Longest),
+  settingField("超大1中边阈值 (in)","sizes.oversize1Mid",s.sizes.oversize1Mid),
+  settingField("超大1长周阈值 (in)","sizes.oversize1Girth",s.sizes.oversize1Girth),
+  settingField("超大2最长边阈值 (in)","sizes.oversize2Longest",s.sizes.oversize2Longest),
+  settingField("超大2长周阈值 (in)","sizes.oversize2Girth",s.sizes.oversize2Girth),
+  settingField("大件重量阈值 (lb)","sizes.bigWeight",s.sizes.bigWeight),
+  settingField("大件最长边阈值 (in)","sizes.bigLongest",s.sizes.bigLongest),
+  settingField("大件长周阈值 (in)","sizes.bigGirth",s.sizes.bigGirth)
+ ].join("");
+ const drows=s.directMail.tiers.map((t,i)=>'<tr><td>'+(i+1)+'</td><td><input data-setting="directMail.tiers.'+i+'.max" type="number" step="0.01" value="'+t.max+'"></td><td><input data-setting="directMail.tiers.'+i+'.regular" type="number" step="0.01" value="'+t.regular+'"></td><td><input data-setting="directMail.tiers.'+i+'.battery" type="number" step="0.01" value="'+t.battery+'"></td><td><input data-setting="directMail.tiers.'+i+'.cosmetics" type="number" step="0.01" value="'+t.cosmetics+'"></td><td><input data-setting="directMail.tiers.'+i+'.handling" type="number" step="0.01" value="'+t.handling+'"></td></tr>').join("");
+ document.getElementById("directTable").innerHTML='<table class="rate-table"><thead><tr><th>档位</th><th>重量上限 kg</th><th>普货 RMB/kg</th><th>带电 RMB/kg</th><th>化妆品 RMB/kg</th><th>处理费 RMB/票</th></tr></thead><tbody>'+drows+'</tbody></table>'+('<div style="padding:10px 0;max-width:220px">'+settingField("最低计费重 (kg)","directMail.minBillableKg",s.directMail.minBillableKg,{step:"0.001"})+'</div>');
+}
+function setPath(obj,path,value){const parts=path.split(".");let cur=obj;for(let i=0;i<parts.length-1;i++){const k=/^\d+$/.test(parts[i])?Number(parts[i]):parts[i];cur=cur[k]}const last=parts[parts.length-1];const key=/^\d+$/.test(last)?Number(last):last;if(path.indexOf("commissions.")===0&&(last==="low"||last==="high"))value=value/100;cur[key]=value}
+function renderView(name){
+ app.view=name;document.getElementById("workbenchView").classList.toggle("hidden",name!=="workbench");document.getElementById("settingsView").classList.toggle("hidden",name!=="settings");
+ document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===name));
+ if(name==="settings")renderSettings();
+}
+function newRecord(mode){
+ const id=uid();const r=mode==="wfs"?{id,mode,sku:"",name:"",category:"宠物用品",freight:"海运",hazardous:false,apparel:false,purchaseRmb:0,weightKg:0,lengthCm:0,widthCm:0,heightCm:0,duty:0,ads:0.1,returns:0.05,unsellable:0.5,months:2,targetMargin:0.15,testPrice:null}:{id,mode:"direct",sku:"",name:"",goodsType:"regular",purchaseRmb:0,weightKg:0,commission:0.15,duty:0,ads:0.1,returns:0.05,targetMargin:0.15,testPrice:null};
+ app.records.push(r);app.activeId=id;save();renderEditor();renderWorkbench()
+}
+document.querySelector(".tabs").addEventListener("click",e=>{const t=e.target.closest("[data-view]");if(t)renderView(t.dataset.view)});
+document.querySelector(".record-actions").addEventListener("click",e=>{const b=e.target.closest("[data-new]");if(b)newRecord(b.dataset.new)});
+document.getElementById("recordList").addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(!b)return;app.activeId=b.dataset.id;save();renderEditor();renderWorkbench()});
+document.getElementById("searchBox").addEventListener("input",renderList);
+document.getElementById("editorPanel").addEventListener("input",e=>{
+ const el=e.target.closest("[data-field]");if(!el)return;const r=active();if(!r)return;
+ const def=el.closest(".field");const label=def?def.querySelector(".field-label"):null;
+ const inputDef=el.dataset.field;
+ const scale=el.dataset.scale?Number(el.dataset.scale):1;
+ if(el.tagName==="SELECT"){r[inputDef]=inputDef==="hazardous"||inputDef==="apparel"?el.value==="true":el.value}
+ else if(el.type==="number"){r[inputDef]=el.value===""?null:Number(el.value)/scale}
+ else r[inputDef]=el.value;
+ save();renderWorkbench()
+});
+document.getElementById("editorPanel").addEventListener("change",e=>{
+ const el=e.target.closest("select[data-field]");if(!el)return;const r=active();if(!r)return;
+ r[el.dataset.field]=el.dataset.field==="hazardous"||el.dataset.field==="apparel"?el.value==="true":el.value;save();renderWorkbench()
+});
+document.getElementById("editorPanel").addEventListener("click",e=>{
+ const b=e.target.closest("[data-action]");if(!b)return;const r=active();if(!r)return;
+ if(b.dataset.action==="delete"){if(confirm("删除当前 SKU 方案？")){app.records=app.records.filter(x=>x.id!==r.id);app.activeId=app.records[0]?.id||"";save();renderEditor();renderWorkbench()}}
+ if(b.dataset.action==="duplicate"){const n=clone(r);n.id=uid();n.sku=(n.sku||"未命名")+"-副本";n.name=(n.name||"方案")+"（副本）";app.records.push(n);app.activeId=n.id;save();renderEditor();renderWorkbench()}
+});
+document.getElementById("settingsView").addEventListener("input",e=>{
+ const el=e.target.closest("[data-setting]");if(!el)return;const v=el.value===""?0:Number(el.value);const scale=el.dataset.setting==="paymentFee"?100:1;
+ setPath(app.settings,el.dataset.setting,v/scale);save();renderWorkbench()
+});
+document.getElementById("resetSettings").addEventListener("click",()=>{if(confirm("把全局参数和费率恢复为上传模板中的默认值？")){app.settings=clone(defaultSettings);save();renderSettings();renderWorkbench()}});
+document.getElementById("exportBtn").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify({settings:app.settings,records:app.records,activeId:app.activeId},null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="walmart-pricing-data.json";a.click();URL.revokeObjectURL(url)
+});
+document.getElementById("importFile").addEventListener("change",async e=>{
+ const f=e.target.files&&e.target.files[0];if(!f)return;
+ try{const s=JSON.parse(await f.text());if(!s||!Array.isArray(s.records)||!s.settings)throw new Error("格式不正确");app={settings:s.settings,records:s.records,activeId:s.activeId||s.records[0]?.id||"",view:"workbench"};if(!active())app.activeId=app.records[0]?.id||"";save();renderEditor();renderWorkbench();renderView("workbench")}catch(err){alert("导入失败，请选择本工作台导出的 JSON 文件。")}
+ e.target.value=""
+});
+renderEditor();renderWorkbench();renderView("workbench");
+})();
+</script>
+</body>
+</html>
